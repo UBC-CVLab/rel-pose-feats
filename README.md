@@ -10,9 +10,10 @@ Original code is written by Hueihan Jhuang. I provide some speed-ups and an inte
 
 2. **Generate relational pose features from motion-capture for one of its projects.**
 
-## Dependencies (provided)
+## Dependencies [included in the package]
 - demo_compute_pose by Hueihan Jhuang available at http://files.is.tue.mpg.de/jhmdb/demo_compute_pose.zip
 
+- mocap-dense-trajectories available on Github.
 References
 ----------
 1. Hueihan Jhuang; Gall, J.; Zuffi, S.; Schmid, C.; Black, M.J., "Towards Understanding Action Recognition," in Computer Vision (ICCV), 2013 IEEE International Conference on , vol., no., pp.3192-3199, 1-8 Dec. 2013 
