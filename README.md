@@ -9,7 +9,7 @@ The original code is written by **Hueihan Jhuang**. Here, I provide some speed-u
 % Add files to path.
 init_rel_pose_feats
 ```
-1) **Generate relational pose features from FMP output .**
+1) **From FMP output .**
 ```
 % Load fmp output already saved in a mat file.
 fmp_data   = load('query001.mat');
@@ -23,7 +23,7 @@ opt        = struct('T', 5, 's', 2);
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_fmp(pose2d, 1:num_frames, opt);
 ```
-2) **Generate relational pose features from motion-capture as seen from a viewpoint.**
+2) **From orthographic projection of motion capture data.**
 ```
 % Read a mocap file (in BVH format).
 [imocap, ~] = load_imocap_seq( '12_02', BASE_PATH, FPS);
@@ -36,7 +36,8 @@ phi         = pi/2; % Azimuthal angle.
 opt         = struct('T', 5, 's', 2);
 
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_imocap(imocap, frame_range, theta, phi, opt);
+    angle_rel_traj, ort_rel_traj] = pose_desc_imocap(imocap, frame_range, ...
+    theta, phi, opt);
 ```
 
 ### Dependencies (included in the package)
