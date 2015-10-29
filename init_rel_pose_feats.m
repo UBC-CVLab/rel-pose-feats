@@ -8,5 +8,6 @@ addpath(thisDir);
 include  = @(d)addpath(genpath(d));
 
 %% Add subfolders to path.
-include(fullfile(thisDir, 'demo_compute_pose'));
+include(fullfile(thisDir, 'data'));
+include(fullfile(thisDir, 'extern'));
 include(fullfile(thisDir, 'optimized_code'));

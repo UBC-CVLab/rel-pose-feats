@@ -29,7 +29,7 @@ fmp_data   = load('query001.mat');
 pose2d     = fmp_data.pose2d;
 num_frames = numel(pose2d);
 
-fprintf('Generating relational pose features for a fmp poses...');
+fprintf('Generating relational pose features for an fmp pose sequence...');
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_fmp(pose2d, 1:num_frames, opt);
 
