@@ -1,8 +1,8 @@
 ## Relational pose features from 2d human skeleton. 
 
-Human pose similarity cannot be described well in terms of absolute location of body parts. One can instead generate features which capture relationship between position and orientation of body parts. Relational pose features are These have been used as features for action recognition [1] and mocap retrieval [3].
+Human pose similarity cannot be described well in terms of absolute location of body parts. One can instead generate *relational pose features* that capture relationship between position and orientation of body parts. These features have been successfully used for action recognition [1] and mocap retrieval [3].
 
-The original code is written by **Hueihan Jhuang**. Here, I provide some speed-ups and an interface to generate these features from the FMP [2] output and human motion capture data (as seen from a given angle). For more details see [1].
+The original code is written by **Hueihan Jhuang**. Here, I provide some speed-ups and an interface to generate these features from a) FMP [2] output and b) motion capture data (as seen from a given angle). For more details see [1].
 
 ### Examples
 ```
@@ -23,13 +23,14 @@ opt        = struct('T', 5, 's', 2);
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_fmp(pose2d, 1:num_frames, opt);
 ```
-2) **Generate relational pose features from motion-capture for one of its projects.**
+2) **Generate relational pose features from motion-capture as seen from a viewpoint.**
 ```
 % Read a mocap file (in BVH format).
 [imocap, ~] = load_imocap_seq( '12_02', BASE_PATH, FPS);
 
 % Pick parameters.
 frame_range = 1:100;
+% We assume orthographic projection. 
 theta       = pi/3; % Elevation angle measured from the vertical.
 phi         = pi/2; % Azimuthal angle.
 opt         = struct('T', 5, 's', 2);
