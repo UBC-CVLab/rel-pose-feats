@@ -1,10 +1,10 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_2d_motion_rel_desc_jhuang(pos_2d_xy, ...
+    angle_rel_traj, ort_rel_traj] = pose_2d_motion_rel_desc(pos_2d_xy, ...
     ref_joint_loc, ref_joint_ort, dist_pairs, angle_triples, opt, RADIAN)
-% POSE_2D_MOTION_REL_DESC_JHUANG Calculate relational features as described
+% POSE_2D_MOTION_REL_DESC Calculate relational features as described
 % in Jhunag et al. using the code provided by the author. This is the common
 % code that can be called for both FMP or imocap poses. For specific
-% functions see: POSE_DESC_FMP_RAW_JHUANG, POSE_DESC_IMOCAP_RAW_JHUANG.
+% functions see: POSE_DESC_FMP, POSE_DESC_IMOCAP.
 %
 % Input-
 %  pos_2d_xy      : 2 x num_joints x num_frames double. Standardized position of all the bones.
