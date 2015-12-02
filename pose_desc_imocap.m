@@ -1,7 +1,7 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_imocap(imocap, frame_range, theta, phi, opt)
 % POSE_DESC_IMOCAP Get the raw pose descriptor (without whitening and normalization) from imocap.
-
+HIP_IND     = 1;
 NUM_JOINTS  = 14;
 num_pairs   = NUM_JOINTS*(NUM_JOINTS - 1)/2;
 num_triples = 3*NUM_JOINTS*(NUM_JOINTS - 1)*(NUM_JOINTS - 2)/6;
@@ -31,7 +31,7 @@ for ii = 1 : NUM_JOINTS,
 end
 
 D          = 1000;
-look_at    = imocap.xyz{1}(:, 1);
+look_at    = imocap.xyz{HIP_IND}(:, 1); % first frame
 % Compute the camera matrix and position for the whole sequence.
 C          = cam_matrix_theta_phi(theta, phi, D, look_at');
 
@@ -50,7 +50,9 @@ for frame = frame_range,
     
     for i=1:size(imocap.xyz, 2),
         bone_loc = imocap.xyz{1, i};
-        bone_loc_3d(i, :) = bone_loc(:, frame)';
+        if ~isempty(bone_loc)
+            bone_loc_3d(i, :) = bone_loc(:, frame)';
+        end
         % We have 2d pose for each frame so we do not need to check if 2d pose exists for this frame.
     end
     pts2d_imocap = render_orthographic(bone_loc_3d', C);
@@ -66,7 +68,7 @@ for frame = frame_range,
     pose2d = pts2d_imocap(:, curr_corres);
     %clf;
     %draw_bones2d(pose2d, []);
-    %pause(1/30);
+    %pause;
            
     cumu_pose(:, :, ind)  = pose2d;    
     ind                   = ind + 1;
