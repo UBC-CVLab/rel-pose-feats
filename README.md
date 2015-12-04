@@ -21,7 +21,7 @@ opt        = struct('T', 5, 's', 2);
 
 % Each of these output matrices contain different relational feature types.
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_fmp(pose2d, 1:num_frames, opt);
+    angle_rel_traj, ort_rel_traj] = pose_desc_fmp_raw(pose2d, 1:num_frames, opt);
 ```
 2) **From orthographic projection of motion capture data.**
 ```
@@ -36,7 +36,7 @@ phi         = pi/2; % Azimuthal angle.
 opt         = struct('T', 5, 's', 2);
 
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_imocap(imocap, frame_range, ...
+    angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, ...
     theta, phi, opt);
 ```
 

@@ -1,5 +1,5 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_imocap(imocap, frame_range, theta, phi, opt)
+    angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, theta, phi, opt)
 % POSE_DESC_IMOCAP Get the raw pose descriptor (without whitening and normalization) from imocap.
 HIP_IND     = 1;
 NUM_JOINTS  = 14;

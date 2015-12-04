@@ -1,9 +1,11 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_fmp(pose2dcell, frame_range, opt)
+    angle_rel_traj, ort_rel_traj] = pose_desc_fmp_raw(pose2dcell, frame_range, opt)
 % POSE_DESC_FMP This function calculates relational pose features
 % (unnormalized/raw) from the FMP pose estimates. We assume that every frame has a pose estimate. 
 %
-% pose2dcell  : 1 x num_frames cell array, each containing kx28 pose estimates returned by FMP. (14 joints)
+% pose2dcell  : 1 x num_frames cell array, each  
+%                  - either containing kx28 pose estimates returned by FMP. (14 joints)
+%                  - or 2 x 14 already simplified pose.
 % frame_range : 1 x N array. Generates descriptors for these frames indices in pose2dcell.
 % opt         : Struct. {T: traj length (num previous frames to consider), s: trajectory_step}
 %
@@ -57,8 +59,13 @@ ind = 1;
 for fr_i = frame_range,
         
     fmp_boxes = pose2dcell{fr_i};
-    if ~isempty(fmp_boxes)        
-        curr_pose = fmp_boxes_to_simplified_pose(fmp_boxes(1, :), [], joint_maps);
+    if ~isempty(fmp_boxes) 
+        % If in the orginal fmp format.
+        if (size(fmp_boxes, 2)==106),
+            curr_pose = fmp_boxes_to_simplified_pose(fmp_boxes(1, :), [], joint_maps);
+        else % already in simplified format.
+            curr_pose = fmp_boxes;
+        end
         cumu_pose(:, :, ind)   = curr_pose;
         ind  = ind + 1;
     else
