@@ -9,8 +9,8 @@ function xyz = trans2xyz(trans)
 %
 
 % Ankur
-xyz                 = cellfun(@(x) cell2mat(x), trans, 'UniformOutput', false);
+xyz                 = trans;
 not_empty_inds      = cellfun(@(x)(~isempty(x)), xyz);
-xyz(not_empty_inds) = cellfun(@(x) reshape(x(:, 4), 3, []), xyz(not_empty_inds), 'UniformOutput', false);
+xyz(not_empty_inds) = cellfun(@(x) reshape(x(:, 4, :), 3, []), trans(not_empty_inds), 'UniformOutput', false);
 end
 

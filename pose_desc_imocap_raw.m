@@ -1,6 +1,7 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, theta, phi, opt)
 % POSE_DESC_IMOCAP Get the raw pose descriptor (without whitening and normalization) from imocap.
+joint_loc   = trans2xyz(imocap.trans);
 HIP_IND     = 1;
 NUM_JOINTS  = 14;
 num_pairs   = NUM_JOINTS*(NUM_JOINTS - 1)/2;
@@ -31,7 +32,7 @@ for ii = 1 : NUM_JOINTS,
 end
 
 D          = 1000;
-look_at    = imocap.xyz{HIP_IND}(:, 1); % first frame
+look_at    = joint_loc{HIP_IND}(:, 1); % first frame
 % Compute the camera matrix and position for the whole sequence.
 C          = cam_matrix_theta_phi(theta, phi, D, look_at');
 
@@ -48,8 +49,8 @@ for frame = frame_range,
     % Get 3D locations of different bones.
     bone_loc_3d  = zeros(size(imocap, 2), 3);
     
-    for i=1:size(imocap.xyz, 2),
-        bone_loc = imocap.xyz{1, i};
+    for i=1:size(joint_loc, 2),
+        bone_loc = joint_loc{1, i};
         if ~isempty(bone_loc)
             bone_loc_3d(i, :) = bone_loc(:, frame)';
         end
@@ -66,9 +67,9 @@ for frame = frame_range,
         curr_corres = corres{2};
     end
     pose2d = pts2d_imocap(:, curr_corres);
-    %clf;
-    %draw_bones2d(pose2d, []);
-    %pause;
+%     clf;
+%     draw_bones2d(pose2d, []);
+%     pause(1/30);
            
     cumu_pose(:, :, ind)  = pose2d;    
     ind                   = ind + 1;
@@ -87,7 +88,7 @@ ref_joint_loc = squeeze(mean(positions(:, hips, :), 2));
 neck_loc      = squeeze(positions(:, neck, :));
 diff_vec      = ref_joint_loc - neck_loc;
 ref_joint_ort = atan2(diff_vec(2, :), diff_vec(1, :));
-% 
+
 % for f_i = 1 : numel(frame_range),
 %     clf;
 %     hold on;
@@ -96,7 +97,7 @@ ref_joint_ort = atan2(diff_vec(2, :), diff_vec(1, :));
 %     
 %     pause(1/30);
 % end
-% opt = struct('T', 7, 's', 3);
+
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_2d_motion_rel_desc(positions, ...
     ref_joint_loc, ref_joint_ort, dist_pairs, angle_triples, opt, true);
