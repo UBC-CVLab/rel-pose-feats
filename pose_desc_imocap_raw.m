@@ -1,7 +1,7 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, theta, phi, opt)
 % POSE_DESC_IMOCAP Get the raw pose descriptor (without whitening and normalization) from imocap.
-joint_loc   = trans2xyz(imocap.trans);
+joint_loc   = imocap.xyz_mat;
 HIP_IND     = 1;
 NUM_JOINTS  = 14;
 num_pairs   = NUM_JOINTS*(NUM_JOINTS - 1)/2;
@@ -32,7 +32,7 @@ for ii = 1 : NUM_JOINTS,
 end
 
 D          = 1000;
-look_at    = joint_loc{HIP_IND}(:, 1); % first frame
+look_at    = joint_loc(1+3*(HIP_IND-1):3*HIP_IND, 1); % first frame
 % Compute the camera matrix and position for the whole sequence.
 C          = cam_matrix_theta_phi(theta, phi, D, look_at');
 
@@ -46,30 +46,22 @@ cumu_pose  = zeros(2, NUM_JOINTS, num_frames);
 
 ind = 1;
 for frame = frame_range,
-    % Get 3D locations of different bones.
-    bone_loc_3d  = zeros(size(imocap, 2), 3);
-    
-    for i=1:size(joint_loc, 2),
-        bone_loc = joint_loc{1, i};
-        if ~isempty(bone_loc)
-            bone_loc_3d(i, :) = bone_loc(:, frame)';
-        end
-        % We have 2d pose for each frame so we do not need to check if 2d pose exists for this frame.
-    end
-    pts2d_imocap = render_orthographic(bone_loc_3d', C);
+
+    bone_loc_3d  = reshape(joint_loc(:, frame), 3, []);
+    pts2d_imocap = render_orthographic(bone_loc_3d, C);
     
     % Left is actually in the the left, i.e. person facing front.
-    lsx = pts2d_imocap(1, left_shoulder_ind);
-    rsx = pts2d_imocap(1, right_shoulder_ind);
+    lsx = pts2d_imocap(1, imocap.data_inds(left_shoulder_ind));
+    rsx = pts2d_imocap(1, imocap.data_inds(right_shoulder_ind));
     if  lsx > rsx,
         curr_corres = corres{1};
     else
         curr_corres = corres{2};
     end
-    pose2d = pts2d_imocap(:, curr_corres);
-%     clf;
-%     draw_bones2d(pose2d, []);
-%     pause(1/30);
+    pose2d = pts2d_imocap(:, imocap.data_inds(curr_corres));
+%      clf;
+%      draw_bones2d(pose2d, []);
+%      pause(1/30);
            
     cumu_pose(:, :, ind)  = pose2d;    
     ind                   = ind + 1;
@@ -89,14 +81,6 @@ neck_loc      = squeeze(positions(:, neck, :));
 diff_vec      = ref_joint_loc - neck_loc;
 ref_joint_ort = atan2(diff_vec(2, :), diff_vec(1, :));
 
-% for f_i = 1 : numel(frame_range),
-%     clf;
-%     hold on;
-%     plot(ref_joint_loc(1, f_i), ref_joint_loc(2, f_i), 'bd');
-%     draw_bones2d(positions(:, :, f_i), []);
-%     
-%     pause(1/30);
-% end
 
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_2d_motion_rel_desc(positions, ...
