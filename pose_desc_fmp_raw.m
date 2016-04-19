@@ -70,11 +70,12 @@ for fr_i = frame_range,
         ind  = ind + 1;
     else
         warning('Missing FMP response...%d', ind);
+        ind  = ind + 1;
         continue;
     end
 
 end
-cumu_pose = cumu_pose(:, :, 1:ind-1);
+% cumu_pose = cumu_pose(:, :, 1:ind-1);
 
 shoulders         = [find(curr_corres == imocap_part_ind('LeftArm')) find(curr_corres==imocap_part_ind('RightArm'))];
 hips              = [find(curr_corres == imocap_part_ind('LeftUpLeg')) find(curr_corres==imocap_part_ind('RightUpLeg'))];
@@ -82,7 +83,7 @@ neck              = curr_corres == imocap_part_ind('Neck1');
 
 diff_torso        = mean(cumu_pose(:, hips, :), 2) - mean(cumu_pose(:, shoulders, :), 2);
 torso_height      = sqrt(sum(reshape(diff_torso, 2, []).^2, 1));
-median_normalizer = median(torso_height);
+median_normalizer = median(torso_height(torso_height>0));
 
 % rescale such that median torso height is 1.
 positions     = cumu_pose./median_normalizer;
@@ -91,15 +92,16 @@ neck_loc      = squeeze(positions(:, neck, :));
 diff_vec      = ref_joint_loc - neck_loc;
 ref_joint_ort = atan2(diff_vec(2, :), diff_vec(1, :));
 
-%if debug,
-% for f_i = 1 : numel(frame_range),
-%     clf;
-%     hold on;
-%     plot(ref_joint_loc(1, f_i), ref_joint_loc(2, f_i), 'bd');
-%     draw_bones2d(positions(:, :, f_i), []);
-%
-%     pause(1/30);
-% end
+% debug = 1;
+% if debug,
+%     for f_i = 1 : numel(frame_range),
+%         clf;
+%         hold on;
+%         plot(ref_joint_loc(1, f_i), ref_joint_loc(2, f_i), 'bd');
+%         draw_bones2d(positions(:, :, f_i), []);
+% 
+%         pause(1/30);
+%     end
 % end
 [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
     angle_rel_traj, ort_rel_traj] = pose_2d_motion_rel_desc(positions, ...

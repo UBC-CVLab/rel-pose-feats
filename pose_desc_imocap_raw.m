@@ -1,6 +1,9 @@
 function [norm_pos, dist_rel, angle_rel, ort_rel, cart_traj, radial_traj, dist_rel_traj,...
-    angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, theta, phi, opt)
+    angle_rel_traj, ort_rel_traj] = pose_desc_imocap_raw(imocap, frame_range, theta, phi, opt, no_flip)
 % POSE_DESC_IMOCAP Get the raw pose descriptor (without whitening and normalization) from imocap.
+if nargin < 6,
+    no_flip = false;
+end
 joint_loc   = imocap.xyz_mat;
 HIP_IND     = 1;
 NUM_JOINTS  = 14;
@@ -49,20 +52,20 @@ for frame = frame_range,
 
     bone_loc_3d  = reshape(joint_loc(:, frame), 3, []);
     pts2d_imocap = render_orthographic(bone_loc_3d, C);
-    
-    % Left is actually in the the left, i.e. person facing front.
-    lsx = pts2d_imocap(1, imocap.data_inds(left_shoulder_ind));
-    rsx = pts2d_imocap(1, imocap.data_inds(right_shoulder_ind));
-    if  lsx > rsx,
-        curr_corres = corres{1};
-    else
-        curr_corres = corres{2};
+    curr_corres  = corres{2};
+    if ~no_flip,
+        % Left is actually in the the left, i.e. person facing front.
+        lsx = pts2d_imocap(1, imocap.data_inds(left_shoulder_ind));
+        rsx = pts2d_imocap(1, imocap.data_inds(right_shoulder_ind));
+        if  lsx > rsx,
+            curr_corres = corres{1};
+        end
     end
     pose2d = pts2d_imocap(:, imocap.data_inds(curr_corres));
-%      clf;
-%      draw_bones2d(pose2d, []);
-%      pause(1/30);
-           
+%     clf;
+%     draw_bones2d(pose2d, 0);
+%     pause(1/3);
+            
     cumu_pose(:, :, ind)  = pose2d;    
     ind                   = ind + 1;
 end
