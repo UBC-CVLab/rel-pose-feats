@@ -48,4 +48,4 @@ opt         = struct('T', 5, 's', 2);
 ### References
 1. Hueihan Jhuang; Gall, J.; Zuffi, S.; Schmid, C.; Black, M.J., "Towards Understanding Action Recognition," in ICCV, 2013
 2. Yi Yang; Ramanan, D., "Articulated Human Detection with Flexible Mixtures of Parts," TPAMI, 2013
-3. Ankur Gupta; He, J.; Martinez J.; Little J.J.; Woodham R.J., "Efficient video-based retrieval of human motion with flexible alignment," in WACV, 2016 (to appear) 
+3. Ankur Gupta; He, J.; Martinez J.; Little J.J.; Woodham R.J., "Efficient video-based retrieval of human motion with flexible alignment," in WACV, 2016
